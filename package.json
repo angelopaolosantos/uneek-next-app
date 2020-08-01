@@ -1,0 +1,47 @@
+{
+  "name": "uneek-next-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.1.1",
+    "@google-cloud/firestore": "^4.1.1",
+    "@zeit/next-css": "^1.0.1",
+    "@zeit/next-less": "^1.0.1",
+    "@zeit/next-sass": "^1.0.1",
+    "apollo-server-micro": "^2.16.1",
+    "base32": "0.0.6",
+    "firebase": "^7.17.1",
+    "geohash-distance": "^1.0.2",
+    "google-maps-react": "^2.0.6",
+    "graphql": "^15.3.0",
+    "graphql-tools": "^6.0.15",
+    "less": "^3.12.0",
+    "lodash": "^4.17.19",
+    "mongodb": "^3.5.9",
+    "next": "9.4.4",
+    "next-compose-plugins": "^2.2.0",
+    "ngeohash": "^0.6.3",
+    "pure-react-carousel": "^1.27.1",
+    "react": "16.13.1",
+    "react-alice-carousel": "^1.19.3",
+    "react-dom": "16.13.1",
+    "react-geocode": "^0.2.1",
+    "react-html-parser": "^2.0.2",
+    "react-image-magnifiers": "^1.4.0",
+    "recompose": "^0.30.0",
+    "rsuite": "^4.8.0"
+  },
+  "devDependencies": {
+    "@types/firebase": "^3.2.1",
+    "@types/google-map-react": "^1.1.8",
+    "@types/googlemaps": "^3.39.9",
+    "@types/node": "^14.0.23",
+    "@types/react": "^16.9.43",
+    "typescript": "^3.9.7"
+  }
+}
