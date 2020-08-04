@@ -12,20 +12,21 @@ const SearchResults = (props) => {
     if (keywords != "" && keywords.length > 3) {
         console.log(keywords)
 
-        const QUERY = gql`
-            query SearchProducts($search: String, $limit: Int, $page: Int) {
-            products(search: $search, limit: $limit, page: $page){
-                thumbnail
-                sku
-                name
-                price
-                images
-            },
-            productsCount(search: $search) {
-                count
-            }
-        }
-        `;
+       const QUERY = gql`
+       query SearchProducts($search: String, $limit: Int, $page: Int) {
+       
+        productPage(search: $search, limit: $limit, page: $page) {
+          products {
+            thumbnail
+            sku
+            name
+            price
+            images
+          },
+          count
+        },
+      }`
+
 
         const { loading, error, data } = useQuery(QUERY, {
             variables: { search: keywords, limit: props.limit, page: props.currentPage }
@@ -56,10 +57,11 @@ const SearchResults = (props) => {
         }
 
         if (error) {
+            console.log(error)
             return <div>"Error Occured"</div>
         }
 
-        const listProd = data.products.map((product) => {
+        const listProd = data.productPage.products.map((product) => {
             return (
                 <div className="product">
                     <div><img src={product.images} className="responsive" /></div>
@@ -96,10 +98,11 @@ const SearchResults = (props) => {
             )
         })
 
-        const pages = Math.floor(data.productsCount.count / props.limit) 
+        const pages = Math.floor(data.productPage.count / props.limit) 
 
         return (
             <div>
+                <h3>{data.productPage.count} results found.</h3>
                 <div className="products-block">
                     {listProd}
                     <style jsx>{`
@@ -110,9 +113,11 @@ const SearchResults = (props) => {
                 `}
                     </style>
                 </div>
+                {pages>1 &&
                 <Pagination prev={true}
       next={true} pages={pages} maxButtons={5} activePage={props.currentPage} onSelect={(page)=>props.setCurrentPage(page)} ellipsis={true}
       boundaryLinks={true} />
+                }
             </div>
         )
     } else { // Default content

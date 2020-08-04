@@ -57,11 +57,15 @@ const typeDefs = gql`
       count: Int
   }
 
+  type Products {
+    products: [Product]
+    count: Int
+  }
+
   type Query {
     users(id: Int): [User]!
     retailers(ID: Int, Status: String): [Retailer]!
-    products(search: String, limit: Int, page: Int): [Product]
-    productsCount(search: String): Count
+    productPage(search: String, limit: Int, page: Int): Products
   }
 
 `
@@ -82,7 +86,7 @@ const resolvers = {
                 .toArray()
             return result
         },
-        products: async (_parent, _args, _context, _info) => {
+        productPage: async (_parent, _args, _context, _info) => {
             let mongoSearch = {}
             let limit = 9
             if (_args.limit) {
@@ -95,46 +99,43 @@ const resolvers = {
 
             if (_args.search) {
                 let search = _args.search.split(" ")
+                
+                let searchName = [] // search by name
+                let searchSku = []  // search by sku
 
-                let searchMatch = search.map((keyword) => {
-                    const regex = new RegExp(`${keyword}`, 'i');
-                    const regexWord = new RegExp(`\\b(${keyword})\\b`, 'i');
-                    return { $or: [{ sku: regex }, { name: regexWord }] }
+                search.forEach((keyword) => { 
+                    const regex1 = new RegExp(`${keyword}`, 'i');
+                    const regex2 = new RegExp(`\\b(${keyword})\\b`, 'i');
+                    searchName = [...searchName, {name: regex2}]
+                    searchSku = [...searchSku, {sku: regex1}]
                 })
-                mongoSearch = { $and: searchMatch }
+
+                let searchList = {$or: [{$and: searchName}, ...searchSku]}
+                mongoSearch = searchList
+                console.log(mongoSearch)
             }
-
-            const pageCount = await _context.db
-                .collection('products')
-                .find(mongoSearch).count()
-
-            let skip = limit * page
+            
+            let skip = 0
+            if(page>1) {
+                skip = limit * (page-1)
+            }
+            console.log("skip:", skip)
+            console.log("limit:", limit)
 
             const result = await _context.db
                 .collection('products')
                 .find(mongoSearch).skip(skip).limit(limit)
                 .toArray()
+            
+            console.log(result)
 
-            return result
-        },
-        productsCount: async (_parent, _args, _context, _info) => {
-            let mongoSearch = {}
-            if (_args.search) {
-                let search = _args.search.split(" ")
-
-                let searchMatch = search.map((keyword) => {
-                    const regex = new RegExp(`${keyword}`, 'i');
-                    const regexWord = new RegExp(`\\b(${keyword})\\b`, 'i');
-                    return { $or: [{ sku: regex }, { name: regexWord }] }
-                })
-                mongoSearch = { $and: searchMatch }
-            }
-
-            const result = await _context.db
+            const pageCount = await _context.db
                 .collection('products')
                 .find(mongoSearch).count()
 
-            return {count: result}
+            console.log("pageCount: ", pageCount)
+            
+            return { products: result, count: pageCount }
         },
     },
 }
