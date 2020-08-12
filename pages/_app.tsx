@@ -1,12 +1,19 @@
 // import App from 'next/app'
 import '../styles/custom-theme.less'
 import ApolloProvider from '../contexts/apollo/ApolloProvider'
+import { Auth0Provider } from '@auth0/auth0-react'
 
 function MyApp({ Component, pageProps }) {
   return (
+        <Auth0Provider
+          domain={process.env.NEXT_PUBLIC_DOMAIN}
+          clientId={process.env.NEXT_PUBLIC_CLIENT_ID}
+          redirectUri="http://localhost:3000/"
+        >
         <ApolloProvider>
         <Component {...pageProps} />
         </ApolloProvider>
+        </Auth0Provider>
   )
 }
 
