@@ -1,5 +1,5 @@
 // pages/api/graphql.js
-import { ApolloServer, AuthenticationError } from 'apollo-server-micro'
+import { ApolloServer } from 'apollo-server-micro'
 import schema from './schema'
 import { MongoClient } from 'mongodb'
 
@@ -33,26 +33,25 @@ async function decodeJWT(token) {
         const keys = await getSigningKeysPromise()
         const signingkey = key.getPublicKey()
         const userInfo = jwt.verify(token, signingkey, options)
-        //console.log(key)
-        //console.log(userInfo)
-        //console.log(keys)
         return userInfo
     } catch (err) {
         console.log(err)
     }
-
-
 }
-
-const token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkRMbHF3elJ5NVoyMzlYdG0wb0Q2RCJ9.eyJpc3MiOiJodHRwczovL2Rldi1hbmdlbG9wcy51cy5hdXRoMC5jb20vIiwic3ViIjoieXM0MWZUMkZSSDV4aDFSVWJWMzJQZTAydExxNVNQaTFAY2xpZW50cyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMC9hcGkvZ3JhcGhxbCIsImlhdCI6MTU5NzE5MTMwMiwiZXhwIjoxNTk3Mjc3NzAyLCJhenAiOiJ5czQxZlQyRlJINXhoMVJVYlYzMlBlMDJ0THE1U1BpMSIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.VY-wreoVan0FEBXZfj3ybwX_Tvoa9HOI8vnXv7LC60tlQRrZe7wi7E8bzfB8P_9jqLy0_Z8_zIVcKmFyqC0xaNKiVEZRTej5-ycMTmjQXUgMXE_xiPP_tRy2O3BmV6Jqdc-xriXsAHh6mMMkHQZunYvzu31pCgejXJw_f4kQM811v_1LtSMi-20kOjXoCcFNWgjqJ2JZ54b1cxHdkLnMI7fe72ogitYfggZUgeNa2gGSWkjl09BoZPBGxTiwQXwSW2rc3uGvkJ6sFWKz3zJb9v216-5kXkfmnE84SYRa4u2TE-SDa9WxPnhwRUnbGiePu7nD4zEw_oRNwIbsWzeG2w'
 
 let db
 
 const apolloServer = new ApolloServer({
     schema,
     context: async ({ req }) => {
-        // db = getDatabase(db)
-        const decoded = await decodeJWT(token)
+        let token = req.headers.authorization || '';
+
+        if (token.startsWith('Bearer ')) {
+            // Remove Bearer from string
+            token = token.slice(7, token.length).trimLeft();
+        }
+
+        const userInfo = await decodeJWT(token)
 
         if (!db) {
             try {
@@ -72,7 +71,7 @@ const apolloServer = new ApolloServer({
             }
         }
 
-        return { db, decoded }
+        return { db, userInfo }
     },
 })
 

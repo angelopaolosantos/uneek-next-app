@@ -9,6 +9,7 @@ function MyApp({ Component, pageProps }) {
           domain={process.env.NEXT_PUBLIC_DOMAIN}
           clientId={process.env.NEXT_PUBLIC_CLIENT_ID}
           redirectUri="http://localhost:3000/"
+          audience="http://localhost:3000/api/graphql" // required for getAccessTokenSilently to work
         >
         <ApolloProvider>
         <Component {...pageProps} />
