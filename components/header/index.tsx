@@ -3,7 +3,7 @@ import Link from 'next/link'
 const Header = ({displayText}) => (
     <div className="container">
         <div className="top-message"><p>{displayText}</p></div>
-        <div className="brand-logo"><Link href="/"><a><img src="images/UNEEK_LOGO_WEB_150px.png" /></a></Link></div>
+        <div className="brand-logo"><Link href="/"><a><img src="/images/UNEEK_LOGO_WEB_150px.png" /></a></Link></div>
     <style jsx>{`
         .top-message {
             background-color: #eeefef;

@@ -43,7 +43,7 @@ class SideNavigation extends Component<AppProps, AppState> {
           <Navbar appearance="subtle">
             <Navbar.Header>
               <Link href="/">
-                <a><img className="navbar-brand logo" src='./images/UNEEK_LOGO_WEB_150px.png' /></a>
+                <a><img className="navbar-brand logo" src='/images/UNEEK_LOGO_WEB_150px.png' /></a>
               </Link>
             </Navbar.Header>
             <Navbar.Body>

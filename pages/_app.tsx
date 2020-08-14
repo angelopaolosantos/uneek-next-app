@@ -9,7 +9,8 @@ function MyApp({ Component, pageProps }) {
           domain={process.env.NEXT_PUBLIC_DOMAIN}
           clientId={process.env.NEXT_PUBLIC_CLIENT_ID}
           redirectUri="http://localhost:3000/"
-          audience="http://localhost:3000/api/graphql" // required for getAccessTokenSilently to work
+          //audience="https://dev-angelops.us.auth0.com/api/v2/" // default values for getAccessTokenSilently
+          //scope="read:current_user update:current_user_metadata"
         >
         <ApolloProvider>
         <Component {...pageProps} />

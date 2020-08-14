@@ -21,11 +21,11 @@ const Dropdown = () => (
             </ul>
         </div>
         <div className="image-showcase">
-            <img src="images/navigation/collection-showcase-1.jpg" />
+            <img src="/images/navigation/collection-showcase-1.jpg" />
             <p>Image Showcase Text here!</p>
         </div>
         <div className="image-showcase">
-            <img src="images/navigation/collection-showcase-2.jpg" />
+            <img src="/images/navigation/collection-showcase-2.jpg" />
             <p>Image Showcase Text here!</p>
         </div>
     </div>

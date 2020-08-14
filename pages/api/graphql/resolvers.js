@@ -73,6 +73,12 @@ const resolvers = {
 
             return { products: result, count: pageCount }
         },
+        product: async (_parent, _args, _context, _info) => {
+            const result = await _context.db
+                .collection('products')
+                .findOne(_args)
+            return result
+        },
     },
 }
 
