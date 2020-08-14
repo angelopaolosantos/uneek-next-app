@@ -46,12 +46,16 @@ const apolloServer = new ApolloServer({
     context: async ({ req }) => {
         let token = req.headers.authorization || '';
 
-        if (token.startsWith('Bearer ')) {
-            // Remove Bearer from string
-            token = token.slice(7, token.length).trimLeft();
-        }
+        let userInfo = null
 
-        const userInfo = await decodeJWT(token)
+        if (token) {
+            if (token.startsWith('Bearer ')) {
+                // Remove Bearer from string
+                token = token.slice(7, token.length).trimLeft();
+            }
+
+            userInfo = await decodeJWT(token)
+        }
 
         if (!db) {
             try {
