@@ -11,7 +11,7 @@ const Search = () => {
     return (
         <div className="search-container">
             <h1>Search Product</h1>
-            <SearchForm keywords={keywords} setKeywords={setKeywords} setCurrentPage={setCurrentPage} />
+            <SearchForm keywords={keywords} setKeywords={setKeywords} setCurrentPage={setCurrentPage} currentPage={currentPage} />
             <SearchResults keywords={keywords} currentPage={currentPage} countResults={countResults} limit={limit} setCurrentPage={setCurrentPage} />
             <style jsx>{`
                 .search-container {

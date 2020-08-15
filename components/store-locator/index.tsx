@@ -1,6 +1,5 @@
 import RetailerLookup from './RetailerLookup'
 import Map from "./Map"
-//import StoreLocatorProvider from '../../contexts/store-locator/StoreLocatorProvider'
 import StoreLocatorProvider from '../../contexts/store-locator/StoreLocatorProvider'
 
 const StoreLocator = () => {

@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
 import { useQuery, gql } from '@apollo/client';
-import withApollo from '../../contexts/apollo/withApollo'
 import _ from 'lodash'
 import { Placeholder, Pagination } from 'rsuite'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-const { Paragraph } = Placeholder
+const { Paragraph, Graph } = Placeholder
 
 const SearchResults = (props) => {
     const keywords = _.trim(props.keywords)
@@ -17,6 +17,7 @@ const SearchResults = (props) => {
        
         productPage(search: $search, limit: $limit, page: $page) {
           products {
+            id
             thumbnail
             sku
             name
@@ -35,9 +36,9 @@ const SearchResults = (props) => {
         if (loading) {
             return (
                 <div className="products-block">
-                    <div className="placeholder"><Paragraph graph="image" active rows={5} /></div>
-                    <div className="placeholder"><Paragraph graph="image" active rows={5} /></div>
-                    <div className="placeholder"><Paragraph graph="image" active rows={5} /></div>
+                    <div className="placeholder"><Graph width={'100%'} active /><Paragraph rows={3} active /></div>
+                    <div className="placeholder"><Graph width={'100%'} active /><Paragraph rows={3} active /></div>
+                    <div className="placeholder"><Graph width={'100%'} active /><Paragraph rows={3} active /></div>
 
                     <style jsx>{`
                     .products-block {
@@ -45,10 +46,8 @@ const SearchResults = (props) => {
                         grid-template-columns: auto auto auto;
                     }
                     .placeholder {
-                        border: 1px solid #d2d2d2;
-                        text-align: center;
                         padding: 15px;
-                        margin: 5px;test
+                        margin: 5px;
                     }
                     `}
                     </style>
@@ -64,15 +63,16 @@ const SearchResults = (props) => {
         const listProd = data.productPage.products.map((product) => {
             return (
                 <div className="product">
-                    <div><img src={product.images} className="responsive" /></div>
-                    <div className="product-name">{product.name}</div>
+                    <div className="product-img"><Link href={`/products/${product.id}`}><a><img src={product.images} className="responsive" /></a></Link></div>
+                    <div className="product-detail">
+                    <div className="product-name"><Link href={`/products/${product.id}`}><a>{product.name}</a></Link></div>
                     <div className="product-sku">{product.sku}</div>
                     {product.price > 0 &&
                         <div className="product_price">{product.price}</div>
                     }
+                    </div>
                     <style jsx>{`
                     .product {
-                        border: 1px solid #d2d2d2;
                         text-align: center;
                         padding: 15px;
                         margin: 5px;
@@ -92,6 +92,7 @@ const SearchResults = (props) => {
                     .product-price {
                         font-size: 1.2em;
                     }
+
                     `}
                     </style>
                 </div>
@@ -99,25 +100,49 @@ const SearchResults = (props) => {
         })
 
         const pages = Math.floor(data.productPage.count / props.limit) 
+        
+        const router = useRouter()
+        
+        const handleOnSelect = (page) => {
+            props.setCurrentPage(page)
+            router.push(`/search?keyword=${props.keywords}&page=${page}`)
+        }
 
         return (
-            <div>
+            <div className="container">
                 <h3>{data.productPage.count} results found.</h3>
                 <div className="products-block">
                     {listProd}
-                    <style jsx>{`
+                </div>
+                <div className="pagination">
+                {pages>1 &&
+                <Pagination prev={true}
+      next={true} pages={pages} maxButtons={5} activePage={props.currentPage} onSelect={handleOnSelect} ellipsis={true}
+      boundaryLinks={true} />
+                }
+                </div>
+                <style jsx>{`
+                    .container {
+                        text-align: center;
+                        padding-top: 25px;
+                    }
+
                     .products-block {
                         display: grid;
                         grid-template-columns: auto auto auto;
                     }
+
+                    .pagination {
+                        text-align: center;
+                    }
+
+                    @media only screen and (max-width: 600px) {
+                        .products-block {
+                            grid-template-columns: auto auto;
+                        }
+                    }
                 `}
                     </style>
-                </div>
-                {pages>1 &&
-                <Pagination prev={true}
-      next={true} pages={pages} maxButtons={5} activePage={props.currentPage} onSelect={(page)=>props.setCurrentPage(page)} ellipsis={true}
-      boundaryLinks={true} />
-                }
             </div>
         )
     } else { // Default content
@@ -127,4 +152,4 @@ const SearchResults = (props) => {
     }
 }
 
-export default withApollo(SearchResults)
+export default SearchResults
